@@ -5,11 +5,29 @@ import { loadPage, settle } from './helpers/dom.mjs';
 import { catalogEntryUrl } from '../scripts/model.js';
 import { recentUpdates } from '../scripts/updates-model.js';
 
-const data = JSON.parse(fs.readFileSync(new URL('../databases/updates.json', import.meta.url), 'utf8'));
-const mock = overrides => ({ ...data.updates[0], ...overrides });
+const mock = overrides => ({
+    category: 'talk',
+    targetId: 'example-talk',
+    title: 'Example talk',
+    updatedAt: '2026-10-30T16:00:00Z',
+    commit: 'a'.repeat(40),
+    changes: ['added'],
+    ...overrides
+});
+// Keep UI expectations independent of announcements generated from Git history.
+const data = {
+    updates: [
+        mock({ targetId: 'slides-talk', title: 'A talk with slides', updatedAt: '2026-10-31T12:00:00Z', changes: ['slides-added'] }),
+        mock({ event: { en: '3rd Example Workshop', ja: '第3回サンプル集会' } }),
+        mock({ category: 'paper', targetId: 'example-paper', title: 'Example paper', updatedAt: '2026-10-29T12:00:00Z' }),
+        mock({ category: 'note', targetId: 'example-note', title: 'Example note', updatedAt: '2026-10-28T12:00:00Z' })
+    ]
+};
 
 test('Home shows the latest three updates followed by navigation and research interests in both languages', async t => {
-    const app = await loadPage('index');
+    const app = await loadPage('index', {
+        fetchOverride: name => name === 'updates' ? { ok: true, json: async () => data } : null
+    });
     t.after(app.close);
     const { document } = app;
     const section = document.getElementById('recent-updates');
@@ -34,8 +52,10 @@ test('Home shows the latest three updates followed by navigation and research in
             card.focus();
             assert.equal(document.activeElement, card);
         });
-        assert.match(rows[0].querySelector('.update-kind').textContent, language === 'ja' ? /講演/ : /Talk/);
-        assert.match(rows[1].querySelector('.update-event').textContent, language === 'ja' ? /第3回/ : /3rd/);
+        assert.deepEqual(rows.map(row => row.querySelector('.update-kind').textContent), language === 'ja'
+            ? ['スライドを公開', '講演を追加', 'プレプリントを公開']
+            : ['Slides available', 'Talk added', 'Preprint posted']);
+        assert.equal(rows[1].querySelector('.update-event').textContent, language === 'ja' ? '第3回サンプル集会' : '3rd Example Workshop');
     }
     assert.deepEqual(app.errors, []);
 });
