@@ -43,7 +43,7 @@
                 {
                     "type": "slides",
                     "link": "./slides/cattokyo3rd_handout.pdf",
-                    "isLocked": true
+                    "isLocked": false
                 }
             ],
             "related-papers": [
