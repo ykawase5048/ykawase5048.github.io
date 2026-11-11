@@ -11,7 +11,7 @@
                 {
                     "type": "slides",
                     "link": "./slides/vwdc2026_handout.pdf",
-                    "isLocked": true
+                    "isLocked": false
                 }
             ],
             "related-papers": [
