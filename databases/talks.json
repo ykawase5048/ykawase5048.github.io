@@ -12,6 +12,11 @@
                     "type": "slides",
                     "link": "./slides/vwdc2026_handout.pdf",
                     "isLocked": false
+                },
+                {
+                    "type": "youtube",
+                    "link": "https://www.youtube.com/watch?v=hQc_H4lsHmo",
+                    "isLocked": false
                 }
             ],
             "related-papers": [
