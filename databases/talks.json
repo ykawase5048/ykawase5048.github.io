@@ -49,6 +49,11 @@
                     "type": "slides",
                     "link": "./slides/cattokyo3rd_handout.pdf",
                     "isLocked": false
+                },
+                {
+                    "type": "youtube",
+                    "link": "https://youtu.be/Oxslumat8qo",
+                    "isLocked": false
                 }
             ],
             "related-papers": [
